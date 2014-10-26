@@ -1,15 +1,35 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
+## This function puts the inverse of a Matrix.
+## If the evaluation was already made, the function gives this result
+## Otherwise, it solves the inverse matrix
 
 makeCacheMatrix <- function(x = matrix()) {
-
+  m <- NULL
+  set <- function(y) {
+    x <<- y
+    m <<- NULL
+  }
+  get <- function() x
+  setInvMatrix <- function(solve) m <<- solve
+  getInvMatrix <- function() m
+  list(set = set, get = get,
+       setInvMatrix = setInvMatrix,
+       getInvMatrix = getInvMatrix)
 }
 
-
-## Write a short comment describing this function
-
+## This is the builder function. It calls the first function, if necessary
+## and gives the resultant inverse matrix
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  m <- x$getInvMatrix()
+  if(!is.null(m)) {
+    message("getting cached data")
+    return(m)
+  }
+  message("calculating data")
+  data <- x$get()
+  m <- solve(data, ...)
+  x$setInvMatrix(m)
+  m
 }
+
+## Usage: cacheSolve(makeCacheMatrix(matrix(2*diag(3),3,3)))
+
